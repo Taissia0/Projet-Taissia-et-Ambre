@@ -9,24 +9,24 @@ fOUT = open('separationFecal.csv', 'w')
 
 
 # Saut de la première ligne
-line = fIN.readline()
+ligne = fIN.readline()
 
 # Lecture des lignes
-while line != '':
-    line = fIN.readline()
+while ligne != '':
+    ligne = fIN.readline()
     #  Si il recontre du vide il s'arrête
-    if line == '':
+    if ligne == '':
         # arrêt de la boucle
         return
     # On sépare les éléments pour pouvoir travailler sur certains éléments précis
     valueList=line.split(';')
     
     # On définie le bloc 2 comme étant str, donc le bloque avec les types étudiés
-    sample=str(valueList[2])
+    echantillon=str(valueList[2])
     #On récupère dans un premier temps que les fécals
-    if sample=='fecal':
-        line2=';'.join(valueList)
-        fOUT.write(line2) #On les écrit dans le document csv
+    if echantillon=='fecal':
+        ligne2=';'.join(valueList) #Les données sont collés
+        fOUT.write(ligne2) #Elles sont écrites dans le document csv
 
 fOUT.close()
 fIN.close()
@@ -43,193 +43,186 @@ axes.set_ylabel('nb bacterias')
 
 
 graph = 'fecal'
-
-for mouse in range(17, 33):
+#On range les souris qui les caractéristiques recherchée donc celle de 17 à 33 selon leur nom
+for souris in range(17, 33):
     xVal = []
     yVal = []
 
-    # fill data from file
+    # on ouvre le fichier pour pouvoir exploiter les données
     fIN = open('separationFecal.csv', 'r')
     line = fIN.readline()
-
+#Tant que les qu'il n'y à pas de vide il continue de lire
     while line != '':
         line = fIN.readline()
-        if line == '':
+        if line == '':    #Sinon il arrête de lire
             break 
-        # split line
+        # Séparations des données pour pouvoir les exploiter
         valueList = line.split(';')
-        # retrieve data
-        sampleType = valueList[2]
-        mouseID    = int(valueList[4].replace('ABX', ''))
-        treatment  = valueList[5]    
-        day        = int(valueList[7])
-        bacteria   = math.log(float(valueList[8]))/math.log(10)
+        # Définition des lignes
+        typeechantillon = valueList[2]
+        sourisID    = int(valueList[4].replace('ABX', ''))
+        traitement  = valueList[5]    
+        jours        = int(valueList[7])
+        bacterie   = math.log(float(valueList[8]))/math.log(10)
 
 
-        # filter lines
-        if mouseID == mouse and sampleType == graph :
-            xVal.append(day)
-            yVal.append(bacteria)        
+        "Filtration des lignes
+        if sourisID == souris and typeechantillon == graph :
+            xVal.append(jour) #Ranger dans les coordonnées abscisse
+            yVal.append(bacterie)   #Ranger dans les coordonnées ordonnée     
 
     fIN.close()
 
     axes.plot(xVal, yVal)
 
 
+#Formation du graphique fécal
 
+figure.savefig('Graphique fécal.png', dpi=300)
 
-figure.savefig('result2.png', dpi=300)
-
-#open files (input + output)
+#ouverture du fichier
 fIN  = open('data_real.csv', 'r')
 fOUT = open('separationIleal.csv', 'w')
 
 
-# skip first line
-line = fIN.readline()
+# Saut de la première ligne
+ligne = fIN.readline()
 
-# browse all other lines
-while line != '':
-    # get next line
-    line = fIN.readline()
-    # if we encountered the last line
-    if line == '':
+# Lecture des lignes
+while ligne != '':
+    ligne = fIN.readline()
+    # Si il recontre un espace il arrête de lire
+    if ligne == '':
         # exit the loop
         break
-    #split
-    valueList=line.split(';')
+    #Séparation
+    valueList=ligne.split(';')
     
-    #convert one column into a variable
-    sample=str(valueList[2])
-    #keep only mice for cecal
-    if sample=='ileal':
-        line3=';'.join(valueList)
-        fOUT.write(line3)
+    #Convertition des données en chaine de caractère
+    echantillon=str(valueList[2])
+    #Séparation des donnée Iléal
+    if echantillon=='ileal':
+        ligne3=';'.join(valueList)
+        fOUT.write(ligne3)
         
-
+#Fermeture des fichier ouvert
 fIN.close()
 fOUT.close()
 
-
+#Deinition des listes pour les axes et ordonnées du graphique
 xVal = []
 yVal = []
 xVal2= []
 yVal2= []
 
-# manual filling
-#for i in range(101):
-#    xVal.append(i)
-#    yVal.append( math.cos(math.pi*i/50) )
-#    yVal2.append( math.sin(math.pi*i/50) )
-
-# fill data from file
+# Ouverture du fichier 
 fIN = open('separationIleal.csv', 'r')
-line = fIN.readline()
+ligne = fIN.readline()
 
 count = 0
-while line != '':
-    line = fIN.readline()
-    if line == '':
+while ligne != '':
+    ligne = fIN.readline()
+    if ligne == '':
         break 
-    valueList = line.split(';')
-    traitement = valueList[5]
+    valueList = ligne.split(';') #Séparation
+    traitement = valueList[5] #Définition des zones d'interêt
     bacterie = math.log(float(valueList[8]))/math.log(10)
+    #Si rencontre ABX Le traitement est égal à 1 et rentre dans la catégoris des liste une
     if traitement == 'ABX':
         traitement = 1
         xVal.append(traitement)
         yVal.append (bacterie)
+        #Si ne rencontre pas ABX mis dans les secondes liste et traitement est égal à 2
     else:
         traitement = 2
         xVal2.append(traitement)
         yVal2.append (bacterie)
     count = count+1       
+# traitement =1 ou =2 pour éviter de les avoir sur la même colonne
 
 fIN.close()
 
-# ---------------------------------------------------
-# LINE PLOT
-# ---------------------------------------------------
+# Formation du graphique
+
 figure, axes = plt.subplots()
 
-axes.set_title('Concetration des bactérie dans le Ileal')
-axes.set_xlabel('X values')
-axes.set_ylabel('Y values')
+#Nommée les axes et le titre
 
+axes.set_title('Concetration des bactérie dans le Ileal')
+axes.set_xlabel('Traitement')
+axes.set_ylabel('Contration des bactéries(bactérie log(10))')
+
+#Mise en lien des axes les uns avec les autres
 axes.plot(xVal, yVal)
 axes.plot(xVal2, yVal2)
 
 figure.savefig('Graphique Ileal.png', dpi=300)
 
-# ---------------------------------------------------
-#VIOLIN PLOT
-# ---------------------------------------------------
+#Graphique Violon
 
 figure, axes = plt.subplots()
 
 axes.set_title('Concetration des bactérie dans le Ileal')
-axes.set_ylabel('Y values')
+axes.set_ylabel('Contration des bactéries(bactérie log(10))')
 
+#Définie axes violon
 axes.violinplot([yVal, yVal2])
 
 figure.savefig('Graphique Ileal.png', dpi=300)
 
-#open files (input + output)
+#Ouverture dossier
 fIN  = open('data_real.csv', 'r')
 fOUT = open('separationCecal.csv', 'w')
 
 
-# skip first line
+# Lecture
 line = fIN.readline()
 
-# browse all other lines
-while line != '':
-    # get next line
-    line = fIN.readline()
-    # if we encountered the last line
-    if line == '':
-        # exit the loop
+while ligne != '':
+    # Passe à la ligne suivante
+    ligne = fIN.readline()
+    # Si recontre vide
+    if ligne == '':
+        #Arrêt
         break
-    #split
-    valueList=line.split(';')
+        
+    valueList=line.split(';') #Séparation
     
-    #convert one column into a variable
-    sample=str(valueList[2])
-    #keep only mice for cecal
-    if sample=='cecal':
-        line3=';'.join(valueList)
-        fOUT.write(line3)
+    echantillon=str(valueList[2])
+    #Récupération données spécifique
+    if echantillon=='cecal':
+        ligne3=';'.join(valueList)
+        fOUT.write(linge3)
         
 
 fIN.close()
 fOUT.close()
 
+#Création liste pour les axes
 xVal = []
 yVal = []
 xVal2= []
 yVal2= []
 
-# manual filling
-#for i in range(101):
-#    xVal.append(i)
-#    yVal.append( math.cos(math.pi*i/50) )
-#    yVal2.append( math.sin(math.pi*i/50) )
-
-# fill data from file
+# Ouverture dossier
 fIN = open('separationCecal.csv', 'r')
-line = fIN.readline()
+ligne = fIN.readline()
 
+#Lecture du dossier
 count = 0
-while line != '':
-    line = fIN.readline()
+while ligne != '':
+    ligne = fIN.readline()
     if line == '':
         break 
-    valueList = line.split(';')
-    traitement = str(valueList[5])
+    valueList = ligne.split(';') #Séparation
+    traitement = str(valueList[5]) #Définition
     bacterie = math.log(float(valueList[8]))/math.log(10)
+    #Si rencontre ABX Le traitement est égal à 1 et rentre dans la catégoris des liste une
     if traitement == 'ABX':
         traitement = 1
         xVal.append(traitement)
         yVal.append (bacterie)
+        #Si ne rencontre pas ABX mis dans les secondes liste et traitement est égal à 2
     else:
         traitement = 2
         xVal2.append(traitement)
@@ -239,26 +232,27 @@ while line != '':
 fIN.close()
 
 
-# LINE PLOT
+# Graphique
 
 figure, axes = plt.subplots()
-
+#Définition des axes
 axes.set_title('Concetration des bactérie dans le Cecal')
-axes.set_xlabel('X values')
-axes.set_ylabel('Y values')
+axes.set_xlabel('Traitement')
+axes.set_ylabel('Contration des bactéries(bactérie log(10))')
 
 axes.plot(xVal, yVal)
 axes.plot(xVal2, yVal2)
 
 figure.savefig('Graphique Cecal.png', dpi=300)
 
-#VIOLIN PLOT
+#Graphique Violon
 
 figure, axes = plt.subplots()
 
+#Définis axes
 axes.set_title('Concetration des bactérie dans le Cecal')
 axes.set_ylabel('Y values')
-
+#Défini acex violon
 axes.violinplot([yVal, yVal2])
 
 figure.savefig('Graphique Cecal.png', dpi=300)
