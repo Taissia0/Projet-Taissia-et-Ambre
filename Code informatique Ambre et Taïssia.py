@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import math
 
-
+# Sélection des données pour le graphique 'fécal'
 #ouverture du fichier
 fIN  = open('data_real.csv', 'r')
 fOUT = open('separationFecal.csv', 'w')
@@ -14,7 +14,7 @@ ligne = fIN.readline()
 # Lecture des lignes
 while ligne != '':
     ligne = fIN.readline()
-    #  Si il recontre du vide il s'arrête
+    #  S'il rencontre du vide il s'arrête
     if ligne == '':
         # arrêt de la boucle
         return
@@ -32,13 +32,13 @@ fOUT.close()
 fIN.close()
 #On ferme les documents pour pourvoir reprendre à 0
 
-#GRAPHIQUE avec droites
+# Réalisation du graphique 'fécal' en lignes
 figure, axes = plt.subplots()
 
 #On fait définie les axes
-axes.set_title('Graphique représentant la concentration des bactérie selon leur jours de la semaine')
-axes.set_xlabel('day')
-axes.set_ylabel('nb bacterias')
+axes.set_title('Graphique représentant la concentration des bactéries vivantes selon leur jours de la semaine')
+axes.set_xlabel('Washout (jours)')
+axes.set_ylabel('log10(bactéries vivantes/g)')
 
 
 
@@ -59,15 +59,15 @@ for souris in range(17, 33):
         # Séparations des données pour pouvoir les exploiter
         valueList = line.split(';')
         # Définition des lignes
-        typeechantillon = valueList[2]
+        type_echantillon = valueList[2]
         sourisID    = int(valueList[4].replace('ABX', ''))
         traitement  = valueList[5]    
-        jours        = int(valueList[7])
+        jour        = int(valueList[7])
         bacterie   = math.log(float(valueList[8]))/math.log(10)
 
 
         "Filtration des lignes
-        if sourisID == souris and typeechantillon == graph :
+        if sourisID == souris and type_echantillon == graph :
             xVal.append(jour) #Ranger dans les coordonnées abscisse
             yVal.append(bacterie)   #Ranger dans les coordonnées ordonnée     
 
@@ -80,6 +80,14 @@ for souris in range(17, 33):
 
 figure.savefig('Graphique fécal.png', dpi=300)
 
+
+
+
+
+
+
+
+# Sélection des données pour faire le graphique 'cécal'
 #ouverture du fichier
 fIN  = open('data_real.csv', 'r')
 fOUT = open('separationIleal.csv', 'w')
@@ -109,6 +117,7 @@ while ligne != '':
 fIN.close()
 fOUT.close()
 
+#Réalisation du graphique 'cécal' de type violon
 #Deinition des listes pour les axes et ordonnées du graphique
 xVal = []
 yVal = []
@@ -170,6 +179,11 @@ axes.violinplot([yVal, yVal2])
 
 figure.savefig('Graphique Ileal.png', dpi=300)
 
+
+
+
+
+#Sélection des données pour faire le graphique 'iléal'
 #Ouverture dossier
 fIN  = open('data_real.csv', 'r')
 fOUT = open('separationCecal.csv', 'w')
@@ -231,8 +245,7 @@ while ligne != '':
 
 fIN.close()
 
-
-# Graphique
+# Réalisation du graphique 'iléal' de type violon
 
 figure, axes = plt.subplots()
 #Définition des axes
