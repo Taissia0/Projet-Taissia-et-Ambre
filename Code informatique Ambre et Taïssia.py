@@ -14,27 +14,29 @@ line = fIN.readline()
 # Lecture des lignes
 while line != '':
     line = fIN.readline()
-    # iSi il recontre du vide il s'arrête
+    #  Si il recontre du vide il s'arrête
     if line == '':
         # arrêt de la boucle
-        break
-    
+        return
+    # On sépare les éléments pour pouvoir travailler sur certains éléments précis
     valueList=line.split(';')
     
-
+    # On définie le bloc 2 comme étant str, donc le bloque avec les types étudiés
     sample=str(valueList[2])
-    
+    #On récupère dans un premier temps que les fécals
     if sample=='fecal':
         line2=';'.join(valueList)
-        fOUT.write(line2)
+        fOUT.write(line2) #On les écrit dans le document csv
 
 fOUT.close()
 fIN.close()
+#On ferme les documents pour pourvoir reprendre à 0
 
-
+#GRAPHIQUE avec droites
 figure, axes = plt.subplots()
 
-axes.set_title('Mouse (fecal)')
+#On fait définie les axes
+axes.set_title('Graphique représentant la concentration des bactérie selon leur jours de la semaine')
 axes.set_xlabel('day')
 axes.set_ylabel('nb bacterias')
 
@@ -236,9 +238,9 @@ while line != '':
 
 fIN.close()
 
-# ---------------------------------------------------
+
 # LINE PLOT
-# ---------------------------------------------------
+
 figure, axes = plt.subplots()
 
 axes.set_title('Concetration des bactérie dans le Cecal')
@@ -250,9 +252,7 @@ axes.plot(xVal2, yVal2)
 
 figure.savefig('Graphique Cecal.png', dpi=300)
 
-# ---------------------------------------------------
 #VIOLIN PLOT
-# ---------------------------------------------------
 
 figure, axes = plt.subplots()
 
